@@ -332,6 +332,9 @@ bool Plane::in_preLaunch_flight_stage(void)
     if (control_mode == &mode_takeoff && throttle_suppressed) {
         return true;
     }
+	if (control_mode == &mode_makeoff && throttle_suppressed) {
+        return true;
+    }
 #if HAL_QUADPLANE_ENABLED
     if (quadplane.is_vtol_takeoff(mission.get_current_nav_cmd().id)) {
         return false;

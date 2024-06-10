@@ -73,6 +73,10 @@ void Plane::throttle_slew_limit(SRV_Channel::Aux_servo_function_t func)
 */
 bool Plane::suppress_throttle(void)
 {
+	if (control_mode == &mode_manual) {
+        // Throttle is never suppressed in manual mode
+        return false;
+    }
 #if PARACHUTE == ENABLED
     if (control_mode->does_auto_throttle() && parachute.release_initiated()) {
         // throttle always suppressed in auto-throttle modes after parachute release initiated
@@ -99,10 +103,11 @@ bool Plane::suppress_throttle(void)
     
     if ((control_mode == &mode_auto &&
          auto_state.takeoff_complete == false) ||
-        control_mode == &mode_takeoff) {
+        control_mode == &mode_takeoff ||
+        control_mode == &mode_makeoff) {
 
         uint32_t launch_duration_ms = ((int32_t)g.takeoff_throttle_delay)*100 + 2000;
-        if (is_flying() &&
+        if (is_flying() && control_mode != &mode_makeoff &&
             millis() - started_flying_ms > MAX(launch_duration_ms, 5000U) && // been flying >5s in any mode
             adjusted_relative_altitude_cm() > 500 && // are >5m above AGL/home
             labs(ahrs.pitch_sensor) < 3000 && // not high pitch, which happens when held before launch

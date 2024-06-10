@@ -258,7 +258,7 @@ bool RC_Channel_Plane::do_aux_function(const aux_func_t ch_option, const AuxSwit
         break;
 
     case AUX_FUNC::TAKEOFF:
-        do_aux_function_change_mode(Mode::Number::TAKEOFF, ch_flag);
+        do_aux_function_change_mode(Mode::Number::MAKEOFF, ch_flag);
         break;
 
     case AUX_FUNC::FBWA:

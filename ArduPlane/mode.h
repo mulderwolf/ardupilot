@@ -53,7 +53,9 @@ public:
         THERMAL       = 24,
 #if HAL_QUADPLANE_ENABLED
         LOITER_ALT_QLAND = 25,
-#endif
+#endif        
+		COMBAT_A = 26,
+        MAKEOFF = 27,
     };
 
     // Constructor
@@ -480,6 +482,20 @@ protected:
 
 };
 
+class ModeCMBT : public Mode
+{
+public:
+
+    Number mode_number() const override { return Number::COMBAT_A; }
+    const char* name() const override { return "COMBAT"; }
+    const char* name4() const override { return "CMBT"; }
+
+    // methods that affect movement of the vehicle in this mode
+    void update() override;
+    bool _enter() override;
+    bool mode_allows_autotuning() const override { return false; }
+};
+
 class ModeFBWA : public Mode
 {
 public:
@@ -784,14 +800,30 @@ public:
     AP_Int16 target_alt;
     AP_Int16 level_alt;
     AP_Float ground_pitch;
+    AP_Float level_pitch;
 
 protected:
     AP_Int16 target_dist;
-    AP_Int8 level_pitch;
 
     bool takeoff_started;
     Location start_loc;
 
+    bool _enter() override;
+};
+
+class ModeMakeoff : public Mode
+{
+public:
+    Number mode_number() const override { return Number::MAKEOFF; }
+    const char* name() const override { return "MAKEOFF"; }
+    const char* name4() const override { return "MKOF"; }
+
+    // methods that affect movement of the vehicle in this mode
+    void update() override;
+
+    bool does_auto_throttle() const override { return true; }
+
+protected:
     bool _enter() override;
 };
 

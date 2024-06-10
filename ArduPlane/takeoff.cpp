@@ -49,7 +49,7 @@ bool Plane::auto_takeoff_check(void)
     }  
 
     // Check for bad GPS
-    if (gps.status() < AP_GPS::GPS_OK_FIX_3D) {
+    if ((gps.status() < AP_GPS::GPS_OK_FIX_3D ) && (control_mode != &mode_makeoff)){
         // no auto takeoff without GPS lock
         return false;
     }
@@ -65,6 +65,7 @@ bool Plane::auto_takeoff_check(void)
         float xaccel = TECS_controller.get_VXdot();
         if (g2.takeoff_throttle_accel_count <= 1) {
             if (xaccel < g.takeoff_throttle_min_accel) {
+				takeoff_state.accel_event_counter++;
                 goto no_launch;
             }
         } else {
@@ -104,26 +105,41 @@ bool Plane::auto_takeoff_check(void)
         goto no_launch;
     }
 
-    if (do_takeoff_attitude_check) {
-        // Check aircraft attitude for bad launch
-        if (ahrs.pitch_sensor <= -3000 || ahrs.pitch_sensor >= 4500 ||
-            (!fly_inverted() && labs(ahrs.roll_sensor) > 3000)) {
-            gcs().send_text(MAV_SEVERITY_WARNING, "Bad launch AUTO");
-            takeoff_state.accel_event_counter = 0;
-            goto no_launch;
+    if (!(control_mode == &mode_makeoff)) {
+        if (do_takeoff_attitude_check) {
+            // Check aircraft attitude for bad launch
+            if (ahrs.pitch_sensor <= -3000 || ahrs.pitch_sensor >= 4500 ||
+                (!fly_inverted() && labs(ahrs.roll_sensor) > 3000)) {
+                gcs().send_text(MAV_SEVERITY_WARNING, "Bad launch AUTO");
+                takeoff_state.accel_event_counter = 0;
+                goto no_launch;
+            }
         }
     }
 
-    // Check ground speed and time delay
-    if (((gps.ground_speed() > g.takeoff_throttle_min_speed || is_zero(g.takeoff_throttle_min_speed))) &&
-        ((now - takeoff_state.last_tkoff_arm_time) >= wait_time_ms)) {
-        gcs().send_text(MAV_SEVERITY_INFO, "Triggered AUTO. GPS speed = %.1f", (double)gps.ground_speed());
-        takeoff_state.launchTimerStarted = false;
-        takeoff_state.last_tkoff_arm_time = 0;
-        takeoff_state.start_time_ms = now;
-        steer_state.locked_course_err = 0; // use current heading without any error offset
-        return true;
+    if (!(control_mode == &mode_makeoff)) {
+        // Check ground speed and time delay
+        if (((gps.ground_speed() > g.takeoff_throttle_min_speed || is_zero(g.takeoff_throttle_min_speed))) &&
+            ((now - takeoff_state.last_tkoff_arm_time) >= wait_time_ms)) {
+            gcs().send_text(MAV_SEVERITY_INFO, "Triggered AUTO. GPS speed = %.1f", (double)gps.ground_speed());
+            takeoff_state.launchTimerStarted = false;
+            takeoff_state.last_tkoff_arm_time = 0;
+            takeoff_state.start_time_ms = now;
+            steer_state.locked_course_err = 0; // use current heading without any error offset
+            return true;
+        }
     }
+    else {
+        if (takeoff_state.accel_event_counter>0 && (now - takeoff_state.last_tkoff_arm_time) >= wait_time_ms) {
+            gcs().send_text(MAV_SEVERITY_INFO, "Triggered AUTO");
+            takeoff_state.launchTimerStarted = false;
+            takeoff_state.last_tkoff_arm_time = 0;
+            takeoff_state.start_time_ms = now;
+            steer_state.locked_course_err = 0; // use current heading without any error offset
+            return true;
+        }
+    }
+
 
     // we're not launching yet, but the timer is still going
     return false;

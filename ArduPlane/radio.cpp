@@ -240,6 +240,12 @@ int16_t Plane::rudder_input(void)
 
 void Plane::control_failsafe()
 {
+    if (rc_failsafe_active() && plane.control_mode == &mode_cmbt) {
+        failsafe.rc_failsafe = true;
+        AP_Notify::flags.failsafe_radio = true;
+        return;
+    }
+
     if (rc_failsafe_active()) {
         // we do not have valid RC input. Set all primary channel
         // control inputs to the trim value and throttle to min
