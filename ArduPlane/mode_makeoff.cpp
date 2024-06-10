@@ -6,7 +6,7 @@
   mode makeoff parameters
  */
 ModeTakeoff takeOff;
-bool takeoff_mode_setup;
+bool takeoff_started;
 float baro_alt;
 
 bool ModeMakeoff::_enter()
@@ -23,7 +23,7 @@ void ModeMakeoff::update()
 {
     const float alt = takeOff.target_alt;
     uint32_t now = AP_HAL::millis();
-    if (!takeoff_mode_setup) {
+    if (!takeoff_started) {
         const float direction = degrees(ahrs.get_yaw());
         // see if we will skip takeoff as already flying
         if (plane.is_flying() && (millis() - plane.started_flying_ms > 80000U) && ahrs.groundspeed() > 3) {
@@ -42,7 +42,7 @@ void ModeMakeoff::update()
                 gcs().send_text(MAV_SEVERITY_INFO, "Takeoff to %.0fm heading %.1f deg ,pitch %i",
                     alt, direction, (int)takeOff.level_pitch * 100);
                 plane.takeoff_state.start_time_ms = millis();
-                takeoff_mode_setup = true;
+                takeoff_started = true;
             }
         }
     }

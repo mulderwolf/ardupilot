@@ -804,10 +804,8 @@ public:
 
 protected:
     AP_Int16 target_dist;
-
-    bool takeoff_started;
     Location start_loc;
-
+    bool takeoff_started;
     bool _enter() override;
 };
 
