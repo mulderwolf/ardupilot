@@ -680,7 +680,7 @@ protected:
     void handle_can_frame(const mavlink_message_t &msg) const;
 
     void handle_optical_flow(const mavlink_message_t &msg);
-
+    void handle_hil_msg(const mavlink_message_t& msg);
     void handle_manual_control(const mavlink_message_t &msg);
 
     // default empty handling of LANDING_TARGET

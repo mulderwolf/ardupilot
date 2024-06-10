@@ -4080,6 +4080,8 @@ void GCS_MAVLINK::handle_message(const mavlink_message_t &msg)
     case MAVLINK_MSG_ID_GPS_RTCM_DATA:
     case MAVLINK_MSG_ID_GPS_INPUT:
     case MAVLINK_MSG_ID_HIL_GPS:
+        handle_hil_msg(msg);
+        break;
     case MAVLINK_MSG_ID_GPS_INJECT_DATA:
         AP::gps().handle_msg(chan, msg);
         break;
@@ -6725,6 +6727,14 @@ void GCS_MAVLINK::manual_override(RC_Channel *c, int16_t value_in, const uint16_
         override_value = radio_min + (radio_max - radio_min) * (value_in + offset) / scaler;
     }
     c->set_override(override_value, tnow);
+}
+
+void GCS_MAVLINK::handle_hil_msg(const mavlink_message_t& msg)
+{
+    bool gps_disable_status = AP::gps().have_disable_gps();
+    AP::gps().force_disable(false);
+    AP::gps().handle_msg(chan, msg);
+    AP::gps().force_disable(gps_disable_status);
 }
 
 void GCS_MAVLINK::handle_manual_control(const mavlink_message_t &msg)
