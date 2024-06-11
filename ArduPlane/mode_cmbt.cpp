@@ -33,18 +33,17 @@ void ModeCMBT::update()
 
 
     if (!(plane.failsafe.rc_failsafe)) {
-        //prv_nav_roll_cd = plane.nav_roll_cd;
-        //prv_nav_pitch_cd = plane.nav_pitch_cd;
-        //prv_throttle = throttle;
-        //gcs().send_text(MAV_SEVERITY_INFO, "Switch to FBWA");
-        plane.set_mode(plane.mode_acro, ModeReason::MISSION_CMD);
+        prv_nav_roll_cd = plane.nav_roll_cd;
+        prv_nav_pitch_cd = plane.nav_pitch_cd;
+        prv_throttle = throttle;
     }
 
     //if (millis() - plane.failsafe.last_valid_rc_ms > 100) {}
     if (plane.failsafe.rc_failsafe) {
-        plane.nav_roll_cd = prv_nav_roll_cd;
-        plane.nav_pitch_cd = prv_nav_pitch_cd;
-        SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, prv_throttle);
-        plane.set_mode(plane.mode_cmbt, ModeReason::FAILSAFE);
+        plane.set_mode(plane.mode_acro, ModeReason::MISSION_CMD);
+        //plane.nav_roll_cd = prv_nav_roll_cd;
+        //plane.nav_pitch_cd = prv_nav_pitch_cd;
+        //SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, prv_throttle);
+        //plane.set_mode(plane.mode_cmbt, ModeReason::FAILSAFE);
     }
 }
