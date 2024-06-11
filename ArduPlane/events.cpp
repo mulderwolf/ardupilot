@@ -29,7 +29,6 @@ void Plane::failsafe_short_on_event(enum failsafe_state fstype, ModeReason reaso
     case Mode::Number::MANUAL:
     case Mode::Number::STABILIZE:
     case Mode::Number::ACRO:
-    case Mode::Number::FLY_BY_WIRE_A:
     case Mode::Number::AUTOTUNE:
     case Mode::Number::FLY_BY_WIRE_B:
     case Mode::Number::CRUISE:
@@ -96,9 +95,12 @@ void Plane::failsafe_short_on_event(enum failsafe_state fstype, ModeReason reaso
     case Mode::Number::LOITER_ALT_QLAND:
 #endif
     case Mode::Number::INITIALISING:
-	case Mode::Number::COMBAT_A:
     case Mode::Number::MAKEOFF:
+    case Mode::Number::FLY_BY_WIRE_A:
         break;
+    case Mode::Number::COMBAT_A:
+        set_mode(mode_acro, reason);
+        failsafe.saved_mode_number = Mode::Number::ACRO;
     }
     if (failsafe.saved_mode_number != control_mode->mode_number()) {
         gcs().send_text(MAV_SEVERITY_WARNING, "RC Short Failsafe: switched to %s", control_mode->name());
@@ -119,7 +121,6 @@ void Plane::failsafe_long_on_event(enum failsafe_state fstype, ModeReason reason
     case Mode::Number::MANUAL:
     case Mode::Number::STABILIZE:
     case Mode::Number::ACRO:
-    case Mode::Number::FLY_BY_WIRE_A:
     case Mode::Number::AUTOTUNE:
     case Mode::Number::FLY_BY_WIRE_B:
     case Mode::Number::CRUISE:
@@ -210,6 +211,7 @@ void Plane::failsafe_long_on_event(enum failsafe_state fstype, ModeReason reason
     case Mode::Number::INITIALISING:
 	case Mode::Number::COMBAT_A:
     case Mode::Number::MAKEOFF:
+    case Mode::Number::FLY_BY_WIRE_A:
         break;
     }
     gcs().send_text(MAV_SEVERITY_WARNING, "%s Failsafe On: %s", (reason == ModeReason:: GCS_FAILSAFE) ? "GCS" : "RC Long", control_mode->name());
