@@ -6,7 +6,7 @@
 
 #include "ap_version.h"
 
-#define THISFIRMWARE "SlavaPlane V4.5.3"
+#define THISFIRMWARE "SlavaPlane V4.5.3.000"
 
 // the following line is parsed by the autotest scripts
 #define FIRMWARE_VERSION 4,5,3,FIRMWARE_VERSION_TYPE_OFFICIAL
