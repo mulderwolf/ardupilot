@@ -22,7 +22,7 @@ void ModeFBWA::update()
         plane.nav_pitch_cd = -plane.nav_pitch_cd;
     }
 
-	if (!(plane.failsafe.rc_failsafe)) {
+    if (!(plane.failsafe.rc_failsafe)) {
         rc_err = 0;
         prv_baro_alt = plane.barometer.get_altitude();
         prv_direction = degrees(ahrs.get_yaw())+180;
