@@ -54,7 +54,7 @@ public:
 #if HAL_QUADPLANE_ENABLED
         LOITER_ALT_QLAND = 25,
 #endif        
-        MAKEOFF = 27,
+        MAKEOFF = 26,
     };
 
     // Constructor
