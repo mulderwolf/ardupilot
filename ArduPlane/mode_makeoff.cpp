@@ -39,8 +39,8 @@ void ModeMakeoff::update()
             baro_alt = plane.barometer.get_altitude();
             plane.set_flight_stage(AP_FixedWing::FlightStage::TAKEOFF);
             if (!plane.throttle_suppressed) {
-                gcs().send_text(MAV_SEVERITY_INFO, "Takeoff to %.0fm heading %.1f deg ,pitch %i",
-                    alt, direction, (int)takeOff.level_pitch * 100);
+                gcs().send_text(MAV_SEVERITY_INFO, "Takeoff to %.0fm heading %.1f deg from alt %i to %i",
+                    alt, direction,(int)baro_alt,(int)alt * 100);
                 plane.takeoff_state.start_time_ms = millis();
                 takeoff_started = true;
             }
