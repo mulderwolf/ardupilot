@@ -93,9 +93,6 @@ Mode *Plane::mode_from_mode_num(const enum Mode::Number num)
         ret = &mode_loiter_qland;
         break;
 #endif  // HAL_QUADPLANE_ENABLED
-    case Mode::Number::COMBAT_A:
-        ret = &mode_cmbt;
-        break;
     case Mode::Number::MAKEOFF:
         ret = &mode_makeoff;
         break;

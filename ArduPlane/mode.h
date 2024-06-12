@@ -54,7 +54,6 @@ public:
 #if HAL_QUADPLANE_ENABLED
         LOITER_ALT_QLAND = 25,
 #endif        
-		COMBAT_A = 26,
         MAKEOFF = 27,
     };
 
@@ -482,19 +481,6 @@ protected:
 
 };
 
-class ModeCMBT : public Mode
-{
-public:
-
-    Number mode_number() const override { return Number::COMBAT_A; }
-    const char* name() const override { return "COMBAT"; }
-    const char* name4() const override { return "CMBT"; }
-
-    // methods that affect movement of the vehicle in this mode
-    void update() override;
-    bool _enter() override;
-    bool mode_allows_autotuning() const override { return false; }
-};
 
 class ModeFBWA : public Mode
 {

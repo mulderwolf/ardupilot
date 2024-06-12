@@ -70,7 +70,6 @@ MAV_MODE GCS_MAVLINK_Plane::base_mode() const
         // positions", which APM does not currently do
         break;
     case Mode::Number::INITIALISING:
-    case Mode::Number::COMBAT_A:
     case Mode::Number::MAKEOFF:
         break;
 

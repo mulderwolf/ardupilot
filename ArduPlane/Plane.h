@@ -171,7 +171,6 @@ public:
     friend class ModeTakeoff;
     friend class ModeThermal;
     friend class ModeLoiterAltQLand;
-    friend class ModeCMBT;
     friend class ModeMakeoff;
 
 #if AP_EXTERNAL_CONTROL_ENABLED
@@ -308,7 +307,6 @@ private:
 #if HAL_SOARING_ENABLED
     ModeThermal mode_thermal;
 #endif
-    ModeCMBT mode_cmbt;
     ModeMakeoff mode_makeoff;
 
     // This is the state of the flight control system
