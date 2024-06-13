@@ -258,12 +258,7 @@ bool RC_Channel_Plane::do_aux_function(const aux_func_t ch_option, const AuxSwit
         break;
 
     case AUX_FUNC::TAKEOFF:
-        if (plane.is_flying()) {
-            gcs().send_text(MAV_SEVERITY_INFO, "MAKEOFF when is_flying");
-        }
-        else {
-            do_aux_function_change_mode(Mode::Number::MAKEOFF, ch_flag);
-        }
+        do_aux_function_change_mode(Mode::Number::MAKEOFF, ch_flag);
         break;
 
     case AUX_FUNC::FBWA:
