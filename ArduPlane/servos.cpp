@@ -110,9 +110,7 @@ bool Plane::suppress_throttle(void)
 
         if (control_mode == &mode_makeoff) {
             if (is_flying() && millis() - started_flying_ms > MAX(launch_duration_ms, 5000U)){ // been flying >5s in any mode
-                // we're already flying, do not suppress the throttle. We can get
-                // stuck in this condition if we reset a mission and cmd 1 is takeoff
-                // but we're currently flying around below the takeoff altitude
+                // we're already flying, do not suppress the throttle.
                 throttle_suppressed = false;
                 return false;
             }
