@@ -118,6 +118,17 @@ bool Plane::suppress_throttle(void)
             throttle_suppressed = false;
             return false;
         }
+
+        if (is_flying() && control_mode == &mode_makeoff &&
+            millis() - started_flying_ms > MAX(launch_duration_ms, 5000U) && // been flying >5s in any mode
+            ) { // definite gps movement
+            // we're already flying, do not suppress the throttle. We can get
+            // stuck in this condition if we reset a mission and cmd 1 is takeoff
+            // but we're currently flying around below the takeoff altitude
+            throttle_suppressed = false;
+            return false;
+        }
+
         if (auto_takeoff_check()) {
             // we're in auto takeoff 
             throttle_suppressed = false;
