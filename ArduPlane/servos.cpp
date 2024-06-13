@@ -107,26 +107,27 @@ bool Plane::suppress_throttle(void)
         control_mode == &mode_makeoff) {
 
         uint32_t launch_duration_ms = ((int32_t)g.takeoff_throttle_delay)*100 + 2000;
-        if (is_flying() && control_mode != &mode_makeoff &&
-            millis() - started_flying_ms > MAX(launch_duration_ms, 5000U) && // been flying >5s in any mode
-            adjusted_relative_altitude_cm() > 500 && // are >5m above AGL/home
-            labs(ahrs.pitch_sensor) < 3000 && // not high pitch, which happens when held before launch
-            gps_movement) { // definite gps movement
-            // we're already flying, do not suppress the throttle. We can get
-            // stuck in this condition if we reset a mission and cmd 1 is takeoff
-            // but we're currently flying around below the takeoff altitude
-            throttle_suppressed = false;
-            return false;
-        }
 
-        if (is_flying() && control_mode == &mode_makeoff &&
-            millis() - started_flying_ms > MAX(launch_duration_ms, 5000U) && // been flying >5s in any mode
-            ) { // definite gps movement
-            // we're already flying, do not suppress the throttle. We can get
-            // stuck in this condition if we reset a mission and cmd 1 is takeoff
-            // but we're currently flying around below the takeoff altitude
-            throttle_suppressed = false;
-            return false;
+        if (control_mode == &mode_makeoff) {
+            if (is_flying() && millis() - started_flying_ms > MAX(launch_duration_ms, 5000U)){ // been flying >5s in any mode
+                // we're already flying, do not suppress the throttle. We can get
+                // stuck in this condition if we reset a mission and cmd 1 is takeoff
+                // but we're currently flying around below the takeoff altitude
+                throttle_suppressed = false;
+                return false;
+            }
+        }
+        else {
+            if (is_flying() && millis() - started_flying_ms > MAX(launch_duration_ms, 5000U) && // been flying >5s in any mode
+                adjusted_relative_altitude_cm() > 500 && // are >5m above AGL/home
+                labs(ahrs.pitch_sensor) < 3000 && // not high pitch, which happens when held before launch
+                gps_movement) { // definite gps movement
+                // we're already flying, do not suppress the throttle. We can get
+                // stuck in this condition if we reset a mission and cmd 1 is takeoff
+                // but we're currently flying around below the takeoff altitude
+                throttle_suppressed = false;
+                return false;
+            }
         }
 
         if (auto_takeoff_check()) {
