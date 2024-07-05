@@ -11,6 +11,9 @@ float baro_alt;
 
 bool ModeMakeoff::_enter()
 {
+    if (plane.is_flying() && (millis() - plane.started_flying_ms > 5000U))
+        gcs().send_text(MAV_SEVERITY_WARNING, "Already flying");
+        return false:
     gcs().send_text(MAV_SEVERITY_WARNING, "Makeoff mode");
     takeoff_started = false;
     plane.takeoff_state.accel_event_counter = 0;
