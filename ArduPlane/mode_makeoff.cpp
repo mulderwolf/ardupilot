@@ -11,20 +11,16 @@ float baro_alt;
 
 bool ModeMakeoff::_enter()
 {
-    if (plane.is_flying() && (millis() - plane.started_flying_ms > 5000U))
+    if (plane.is_flying() && (millis() - plane.started_flying_ms > 5000U)) {
         gcs().send_text(MAV_SEVERITY_WARNING, "Already flying");
-        return false:
+        return false;
+    }
     gcs().send_text(MAV_SEVERITY_WARNING, "Makeoff mode");
     takeoff_started = false;
     plane.takeoff_state.accel_event_counter = 0;
     plane.takeoff_state.launchTimerStarted = false;
     plane.takeoff_state.last_tkoff_arm_time = 0;
     return true;
-}
-
-void ModeMakeoff::_exit()
-{
-    gcs().send_text(MAV_SEVERITY_WARNING, "Makeoff mode OFF");
 }
 
 void ModeMakeoff::update()
@@ -78,4 +74,10 @@ void ModeMakeoff::update()
         }
     }
     
+}
+
+
+void ModeMakeoff::_exit()
+{
+    gcs().send_text(MAV_SEVERITY_WARNING, "Makeoff mode OFF");
 }
