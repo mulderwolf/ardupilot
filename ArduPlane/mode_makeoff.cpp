@@ -22,6 +22,11 @@ bool ModeMakeoff::_enter()
     return true;
 }
 
+void ModeMakeoff::_exit()
+{
+    gcs().send_text(MAV_SEVERITY_WARNING, "Makeoff mode OFF");
+}
+
 void ModeMakeoff::update()
 {
     const float alt = takeOff.target_alt;
